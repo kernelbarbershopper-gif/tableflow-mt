@@ -1,91 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import { VitePWA } from 'vite-plugin-pwa'
 import wasm from 'vite-plugin-wasm'
 
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: [
-          ['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }],
-        ],
-      },
-    }),
+    react(),
     wasm(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
-      manifest: {
-        name: 'TableFlow MT',
-        short_name: 'TableFlow',
-        description: 'AI-Native Restaurant OS for Montana Mountain Commerce',
-        theme_color: '#92400e',
-        background_color: '#fef3c7',
-        display: 'standalone',
-        orientation: 'portrait-primary',
-        scope: '/',
-        start_url: '/',
-        icons: [
-          {
-            src: '/icon-192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
-          {
-            src: '/icon-512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
-          },
-        ],
-        categories: ['business', 'food', 'productivity'],
-        shortcuts: [
-          {
-            name: 'PDV',
-            short_name: 'PDV',
-            description: 'Abrir Ponto de Venda',
-            url: '/pos',
-            icons: [{ src: '/icon-pos.png', sizes: '192x192' }],
-          },
-          {
-            name: 'Cozinha',
-            short_name: 'KDS',
-            description: 'Abrir Tela da Cozinha',
-            url: '/kds',
-            icons: [{ src: '/icon-kds.png', sizes: '192x192' }],
-          },
-        ],
-      },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,wasm}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/api\./i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-cache',
-              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 },
-              networkTimeoutSeconds: 10,
-            },
-          },
-          {
-            urlPattern: /^https:\/\/.*\.(png|jpg|jpeg|svg|webp|avif)/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'images-cache',
-              expiration: { maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 30 },
-            },
-          },
-        ],
-      },
-      devOptions: {
-        enabled: true,
-        type: 'module',
-      },
-    }),
   ],
   resolve: {
     alias: {
@@ -140,7 +61,7 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
-    plugins: [wasm()],
+    plugins: () => [wasm()],
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
