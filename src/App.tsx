@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MenuItem, Ingredient, Table, Order, Reservation, Customer, WasteRecord } from './types';
-import { StorageService } from './lib/firebase';
+import { StorageService } from './lib/supabase';
 import { 
   DEFAULT_MENU_ITEMS, 
   DEFAULT_INGREDIENTS, 

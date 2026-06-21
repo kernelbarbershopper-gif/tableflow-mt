@@ -4,11 +4,15 @@ export interface MenuItem {
   description: string;
   price: number;
   cost: number;
-  category: 'Burgers' | 'Steaks & Fish' | 'Sides & Salads' | 'Desserts' | 'Drinks';
+  category: 'Burgers' | 'Steaks & Fish' | 'Sides & Salads' | 'Desserts' | 'Drinks' | 'Entradas' | 'Pratos Principais' | 'Sobremesas' | 'Bebidas' | 'Acompanhamentos';
   ingredients: { name: string; quantityNeeded: number; unit: string }[];
   image: string;
   popular: boolean;
   available: boolean;
+  image_url?: string;
+  isAvailable?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Ingredient {
@@ -19,15 +23,20 @@ export interface Ingredient {
   unit: string;
   costPerUnit: number;
   supplier: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Table {
   id: string;
+  name: string;
   number: string;
   capacity: number;
   status: 'available' | 'occupied' | 'reserved';
   currentOrderId?: string;
-  occupiedSince?: string; // ISO date string
+  occupiedSince?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface OrderItem {
@@ -35,19 +44,22 @@ export interface OrderItem {
   name: string;
   quantity: number;
   price: number;
+  notes?: string;
 }
 
 export interface Order {
   id: string;
-  tableId?: string; // undefined if takeout/delivery
-  type: 'dine-in' | 'takeout' | 'delivery';
+  tableId?: string;
+  type?: 'dine-in' | 'takeout' | 'delivery';
   status: 'pending' | 'preparing' | 'ready' | 'completed' | 'cancelled';
   items: OrderItem[];
-  subtotal: number;
-  tax: number; // Resort Tax (Montana Specific: 3% or 4%)
-  tip: number;
+  subtotal?: number;
+  tax?: number;
+  tip?: number;
   total: number;
-  createdAt: string;
+  createdAt?: string;
+  created_at?: string;
+  updated_at?: string;
   paymentMethod?: 'cash' | 'card' | 'gift-card';
   customerPhone?: string;
   customerName?: string;
@@ -61,28 +73,40 @@ export interface Reservation {
   customerPhone: string;
   partySize: number;
   dateTime: string;
+  reservationTime?: string;
   tableId?: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   notes?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Customer {
   id: string;
   name: string;
   phone: string;
-  email: string;
+  email?: string;
   points: number;
-  joinDate: string;
+  joinDate?: string;
   notes?: string;
   loyaltyTier: 'Bronze' | 'Silver' | 'Gold' | 'Platinium';
+  totalSpent?: number;
+  visitCount?: number;
+  lastVisit?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface WasteRecord {
   id: string;
+  ingredientId?: string;
   ingredientName: string;
   quantity: number;
   unit: string;
   cost: number;
   reason: string;
-  date: string;
+  date?: string;
+  created_at?: string;
+  updated_at?: string;
+  recordedBy?: string;
 }

@@ -129,14 +129,14 @@ export const DEFAULT_INGREDIENTS: Ingredient[] = [
 ];
 
 export const DEFAULT_TABLES: Table[] = [
-  { id: 't1', number: '10', capacity: 2, status: 'available' },
-  { id: 't2', number: '11', capacity: 2, status: 'occupied', currentOrderId: 'test-o1', occupiedSince: new Date(Date.now() - 45 * 60 * 1000).toISOString() },
-  { id: 't3', number: '12', capacity: 4, status: 'available' },
-  { id: 't4', number: '14', capacity: 4, status: 'reserved' },
-  { id: 't5', number: '20 (Bar)', capacity: 1, status: 'available' },
-  { id: 't6', number: '21 (Bar)', capacity: 1, status: 'occupied', currentOrderId: 'test-o2', occupiedSince: new Date(Date.now() - 15 * 60 * 1000).toISOString() },
-  { id: 't7', number: '30 (Patio)', capacity: 6, status: 'available' },
-  { id: 't8', number: '31 (Patio)', capacity: 4, status: 'available' }
+  { id: 't1', name: 'Table 10', number: '10', capacity: 2, status: 'available' },
+  { id: 't2', name: 'Table 11', number: '11', capacity: 2, status: 'occupied', currentOrderId: 'test-o1', occupiedSince: new Date(Date.now() - 45 * 60 * 1000).toISOString() },
+  { id: 't3', name: 'Table 12', number: '12', capacity: 4, status: 'available' },
+  { id: 't4', name: 'Table 14', number: '14', capacity: 4, status: 'reserved' },
+  { id: 't5', name: 'Bar Seat 20', number: '20 (Bar)', capacity: 1, status: 'available' },
+  { id: 't6', name: 'Bar Seat 21', number: '21 (Bar)', capacity: 1, status: 'occupied', currentOrderId: 'test-o2', occupiedSince: new Date(Date.now() - 15 * 60 * 1000).toISOString() },
+  { id: 't7', name: 'Patio 30', number: '30 (Patio)', capacity: 6, status: 'available' },
+  { id: 't8', name: 'Patio 31', number: '31 (Patio)', capacity: 4, status: 'available' }
 ];
 
 export const DEFAULT_CUSTOMERS: Customer[] = [
