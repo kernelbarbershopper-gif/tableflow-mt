@@ -29,7 +29,7 @@ export default function AppInstallPrompt({ onClose }: AppInstallPromptProps) {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    const checkForge getLatestApkUrl();
+    getLatestApkUrl();
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);

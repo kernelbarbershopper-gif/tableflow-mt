@@ -10,15 +10,19 @@ import InventoryView from './components/InventoryView';
 import CustomersView from './components/CustomersView';
 import ReportsView from './components/ReportsView';
 import AppInstallPrompt from './components/AppInstallPrompt';
+import AdminPanel from './components/AdminPanel';
+import ProfilePage from './components/ProfilePage';
+import { AdminProtectedRoute } from './components/AdminProtectedRoute';
 
 // UI icons
 import { 
   Compass, LayoutGrid, ShoppingCart, Library, BookOpen, Users, 
-  BarChart3, RefreshCw, AlertCircle, FileSpreadsheet, PlayCircle 
+  BarChart3, RefreshCw, AlertCircle, FileSpreadsheet, PlayCircle,
+  Shield, User, Settings
 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'POS' | 'Tables' | 'Inventory' | 'Customers' | 'Reports' | 'ClientMenu' | 'SetupGuide'>('POS');
+  const [activeTab, setActiveTab] = useState<'POS' | 'Tables' | 'Inventory' | 'Customers' | 'Reports' | 'ClientMenu' | 'SetupGuide' | 'Admin' | 'Profile'>('POS');
   
   // App States
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -310,7 +314,9 @@ export default function App() {
               { id: 'Inventory', label: 'Inventory & Costs', icon: Library },
               { id: 'Customers', label: 'Customers CRM', icon: Users },
               { id: 'Reports', label: 'Faturamento / Reports', icon: BarChart3 },
-              { id: 'SetupGuide', label: 'Guia de ProduÃ§Ã£o', icon: BookOpen }
+              { id: 'SetupGuide', label: 'Guia de ProduÃ§Ã£o', icon: BookOpen },
+              { id: 'Admin', label: 'Painel Admin', icon: Shield },
+              { id: 'Profile', label: 'Meu Perfil', icon: User }
             ].map(tab => {
               const TabIcon = tab.icon;
               return (
@@ -390,6 +396,16 @@ export default function App() {
           )}
 
           {activeTab === 'SetupGuide' && <SetupGuideSection />}
+
+          {activeTab === 'Admin' && (
+            <AdminProtectedRoute>
+              <AdminPanel />
+            </AdminProtectedRoute>
+          )}
+
+          {activeTab === 'Profile' && (
+            <ProfilePage onClose={() => setActiveTab('POS')} />
+          )}
         </div>
       </main>
 

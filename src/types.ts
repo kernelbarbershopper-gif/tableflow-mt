@@ -110,3 +110,14 @@ export interface WasteRecord {
   updated_at?: string;
   recordedBy?: string;
 }
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  full_name?: string;
+  phone?: string;
+  role: 'admin' | 'manager' | 'staff' | 'customer';
+  avatar_url?: string;
+  created_at: string;
+  updated_at: string;
+}
