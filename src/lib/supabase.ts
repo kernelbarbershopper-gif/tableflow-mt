@@ -204,15 +204,6 @@ class SupabaseStorageService {
     }
   }
 
-  static async seedIfEmpty<T extends { id: string }>(tableName: TableName, defaults: T[]): Promise<T[]> {
-    const existing = await this.getData<T>(tableName);
-    if (existing.length === 0) {
-      await this.saveData(tableName, defaults);
-      return defaults;
-    }
-    return existing;
-  }
-
   static async checkConnection(): Promise<boolean> {
     try {
       const { error } = await supabase.from('menu_items').select('id', { count: 'exact', head: true });

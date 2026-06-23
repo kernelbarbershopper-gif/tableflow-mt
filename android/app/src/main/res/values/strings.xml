@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TableFlow MT</string>
+    <string name="title_activity_main">TableFlow MT</string>
+    <string name="package_name">com.tableflow.mt</string>
+    <string name="custom_url_scheme">com.tableflow.mt</string>
+</resources>

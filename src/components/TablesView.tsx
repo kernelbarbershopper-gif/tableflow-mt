@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Reservation } from '../types';
-import { LayoutGrid, Calendar, Users, Clock, AlertTriangle, ArrowRight, UserCheck, Mail, Phone, CalendarCheck, CheckCircle, Send, Plus } from 'lucide-react';
+import { LayoutGrid, Calendar, Users, Clock, AlertTriangle, ArrowRight, UserCheck, CalendarCheck, Plus } from 'lucide-react';
 
 interface TablesViewProps {
   tables: Table[];
@@ -15,10 +15,7 @@ export default function TablesView({
   onAddReservation,
   onUpdateTableStatus
 }: TablesViewProps) {
-  const [waitlist, setWaitlist] = useState<{ id: string; name: string; size: number; phone: string; joinedAt: string }[]>([
-    { id: 'w1', name: 'Butch Cassidy', size: 3, phone: '(406) 555-0777', joinedAt: new Date(Date.now() - 22 * 60 * 1000).toISOString() },
-    { id: 'w2', name: 'Teddy Roosevelt', size: 2, phone: '(406) 555-1901', joinedAt: new Date(Date.now() - 8 * 60 * 1000).toISOString() }
-  ]);
+  const [waitlist, setWaitlist] = useState<{ id: string; name: string; size: number; phone: string; joinedAt: string }[]>([]);
   
   const [newWaitName, setNewWaitName] = useState('');
   const [newWaitSize, setNewWaitSize] = useState(2);
@@ -33,9 +30,6 @@ export default function TablesView({
   const [selectedTableForRes, setSelectedTableForRes] = useState('');
   const [resNotes, setResNotes] = useState('');
 
-  // SMS & Mail simulator trigger values
-  const [notificationLog, setNotificationLog] = useState<{ id: string; message: string; type: 'sms' | 'email'; timestamp: string }[]>([]);
-
   const handleAddToWaitlist = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newWaitName || !newWaitPhone) return;
@@ -49,9 +43,6 @@ export default function TablesView({
     };
 
     setWaitlist(prev => [...prev, newEntry]);
-    
-    // Simulate Confirmation SMS
-    addNotification(`SMS sent to ${newWaitName} at ${newWaitPhone}: "Hi ${newWaitName}! TableFlow waiting list spot confirmed. Spot #3. Estimated wait 15 min."`, 'sms');
 
     // Reset
     setNewWaitName('');
@@ -62,8 +53,7 @@ export default function TablesView({
   const handleNotifyWaitlist = (id: string) => {
     const person = waitlist.find(w => w.id === id);
     if (!person) return;
-
-    addNotification(`SMS sent to ${person.name} at ${person.phone}: "TableFlow MT: Your table of ${person.size} is now ready! Please approach the host counter."`, 'sms');
+    // Notification logic would integrate with real SMS service
   };
 
   const handleSeatWaitlist = (id: string, tableId: string) => {
@@ -72,7 +62,6 @@ export default function TablesView({
 
     onUpdateTableStatus(tableId, 'occupied');
     setWaitlist(prev => prev.filter(w => w.id !== id));
-    addNotification(`Notification: Seated ${person.name} party at Table ${tables.find(t => t.id === tableId)?.number || ''}`, 'sms');
   };
 
   const handleRemoveWaitlist = (id: string) => {
@@ -101,10 +90,6 @@ export default function TablesView({
       onUpdateTableStatus(selectedTableForRes, 'reserved');
     }
 
-    // Simulate Confirmation E-mail & SMS
-    addNotification(`E-mail sent to ${resName} (${resEmail}): "TableFlow Booking System: Reservation Confirmed for ${ResMonthDay(resTime)}. We look forward to absolute comfort rústico!"`, 'email');
-    addNotification(`SMS sent to ${resName} at ${resPhone}: "TableFlow Confirm: Reservation locked in for ${ResMonthDay(resTime)}. Respond CANCEL to cancel."`, 'sms');
-
     // Reset Form
     setResName('');
     setResEmail('');
@@ -112,16 +97,6 @@ export default function TablesView({
     setResNotes('');
     setResTime('');
     setSelectedTableForRes('');
-  };
-
-  const addNotification = (message: string, type: 'sms' | 'email') => {
-    const log = {
-      id: `notif_${Date.now()}_${Math.random()}`,
-      message,
-      type,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    setNotificationLog(prev => [log, ...prev]);
   };
 
   function ResMonthDay(dateStr: string) {
@@ -442,35 +417,6 @@ export default function TablesView({
               Complete Reservation
             </button>
           </form>
-        </div>
-
-        {/* Live Notification log for user to see the actions! */}
-        <div className="bg-slate-900 text-slate-100 rounded-2xl p-4 shadow-md space-y-3">
-          <h4 className="font-bold text-xs text-amber-500 uppercase tracking-widest flex items-center gap-1.5">
-            <CheckCircle className="h-3.5 w-3.5" /> SMS & E-mail Log (Simulated)
-          </h4>
-          <span className="block text-[9px] text-slate-400">
-            Simulates automated outgoing customer messaging triggers
-          </span>
-          <div className="space-y-2.5 max-h-[160px] overflow-y-auto font-mono text-[10px]">
-            {notificationLog.length === 0 ? (
-              <p className="text-slate-500 text-center py-4">No automation logs captured yet.</p>
-            ) : (
-              notificationLog.map(log => (
-                <div key={log.id} className="border-b border-slate-800 pb-2 flex gap-1.5 items-start">
-                  {log.type === 'sms' ? (
-                    <span className="bg-green-950 text-green-400 text-[8px] font-bold uppercase tracking-wider px-1 rounded whitespace-nowrap">sms</span>
-                  ) : (
-                    <span className="bg-blue-950 text-blue-400 text-[8px] font-bold uppercase tracking-wider px-1 rounded whitespace-nowrap">mail</span>
-                  )}
-                  <div>
-                    <p className="text-slate-300 break-words leading-relaxed">{log.message}</p>
-                    <span className="text-[8px] text-slate-500">{log.timestamp}</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
         </div>
       </div>
     </div>

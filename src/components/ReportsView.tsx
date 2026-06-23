@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { Order, MenuItem } from '../types';
-import { TrendingUp, BarChart4, Download, CloudLightning, RefreshCw, AlertCircle, ShoppingCart, Truck, BellRing, Check, ShieldCheck } from 'lucide-react';
+import { TrendingUp, BarChart4, Download, RefreshCw, AlertCircle, ShoppingCart, BellRing, Check, ShieldCheck } from 'lucide-react';
 
 interface ReportsViewProps {
   completedOrders: Order[];
-  onSimulateDeliveryOrder: (order: Order) => void;
   menuItems: MenuItem[];
 }
 
 export default function ReportsView({
   completedOrders,
-  onSimulateDeliveryOrder,
   menuItems
 }: ReportsViewProps) {
   const [exportTarget, setExportTarget] = useState<'QuickBooks' | 'Xero'>('QuickBooks');
@@ -24,11 +22,6 @@ export default function ReportsView({
     let dineInCount = 0;
     let takeoutCount = 0;
     let deliveryCount = 0;
-
-    // Standard baseline seed metrics to make the reports look realistic and populated immediately
-    let seededSales = 1240.50;
-    let seededCost = 390.20;
-    let seededTax = 49.60;
 
     completedOrders.forEach(order => {
       salesTotal += order.total;
@@ -49,9 +42,9 @@ export default function ReportsView({
       });
     });
 
-    const netSales = salesTotal + seededSales;
-    const totalIngredientsCost = costTotal + seededCost;
-    const finalTax = taxTotal + seededTax;
+    const netSales = salesTotal;
+    const totalIngredientsCost = costTotal;
+    const finalTax = taxTotal;
     const profit = netSales - totalIngredientsCost - finalTax;
 
     return {
@@ -59,47 +52,16 @@ export default function ReportsView({
       totalIngredientsCost,
       finalTax,
       profit,
-      dineInCount: dineInCount + 18,
-      takeoutCount: takeoutCount + 8,
-      deliveryCount: deliveryCount + 5
+      dineInCount,
+      takeoutCount,
+      deliveryCount
     };
   };
 
   const metrics = calculateFinancialMetrics();
 
-  const handleSimulateThirdPartyOrder = (platform: 'doordash' | 'ubereats') => {
-    // Generate a beautiful, fun delivery order
-    const randomDish = menuItems[Math.floor(Math.random() * menuItems.length)];
-    const qty = Math.floor(Math.random() * 2) + 1;
-    const price = randomDish.price;
-    const subtotal = price * qty;
-    const tax = subtotal * 0.04; // Big Sky Montana 4% Resort Tax
-    const total = subtotal + tax;
-
-    const names = ['Calamity Jane', 'Thomas Jefferson', 'Arapaho Scout', 'Bozeman Local', 'Glacier Ranger'];
-    const randomName = names[Math.floor(Math.random() * names.length)];
-
-    const deliveryOrder: Order = {
-      id: `${platform}_del_${Date.now()}`,
-      type: 'delivery',
-      status: 'pending', // operator must review or accept
-      items: [{ menuItemId: randomDish.id, name: randomDish.name, quantity: qty, price }],
-      subtotal,
-      tax,
-      tip: 4.50, // Delivery tip
-      total: total + 4.50,
-      createdAt: new Date().toISOString(),
-      customerName: `[${platform.toUpperCase()}] ${randomName}`,
-      deliveryPlatform: platform
-    };
-
-    onSimulateDeliveryOrder(deliveryOrder);
-    setIncomingAlert(`🚨 New ${platform.toUpperCase()} order came in automatically! Added to POS Queue.`);
-    setTimeout(() => setIncomingAlert(null), 5000);
-  };
-
   const triggerDataExport = (target: 'QuickBooks' | 'Xero') => {
-    // Generate CSV mockup on flight
+    // Generate CSV export on flight
     const headers = 'Order_ID,Date,Type,Cost_USD,Revenue_USD,ResortTax_USD,Total_USD\n';
     const rows = completedOrders.map(o => 
       `${o.id.slice(-8)},${new Date(o.createdAt).toLocaleDateString()},${o.type},${(o.subtotal * 0.3).toFixed(2)},${o.subtotal.toFixed(2)},${o.tax.toFixed(2)},${o.total.toFixed(2)}`
@@ -291,33 +253,6 @@ export default function ReportsView({
               🔔 {downloadSuccessMessage}
             </p>
           )}
-        </div>
-
-        {/* 3rd Party Delivery Simulator Channels (DoorDash, Uber Eats) */}
-        <div className="bg-slate-900 text-slate-100 rounded-2xl p-5 shadow-md space-y-3">
-          <h4 className="font-bold text-xs text-amber-500 uppercase tracking-widest flex items-center gap-1.5">
-            <CloudLightning className="h-4 w-4" /> API Delivery Simulator
-          </h4>
-          <p className="text-slate-400 text-xs leading-relaxed">
-            Fast-simulate online integrated orders coming from popular US platforms (DoorDash & Uber Eats). Live pushes verify active POS alert flows.
-          </p>
-
-          <div className="space-y-2.5 pt-2">
-            <button
-              onClick={() => handleSimulateThirdPartyOrder('doordash')}
-              className="w-full bg-red-650 hover:bg-red-700 text-white py-2 rounded-xl text-xs font-bold font-mono transition flex items-center justify-center gap-2 cursor-pointer shadow"
-              style={{ backgroundColor: '#FF3008' }}
-            >
-              <Truck className="h-4.5 w-4.5" /> Inject DoorDash Order
-            </button>
-
-            <button
-              onClick={() => handleSimulateThirdPartyOrder('ubereats')}
-              className="w-full bg-slate-950 hover:bg-zinc-850 text-emerald-400 py-2 rounded-xl text-xs font-black font-mono transition flex items-center justify-center gap-2 cursor-pointer border border-emerald-500/20 shadow"
-            >
-              <Truck className="h-4.5 w-4.5" /> Inject Uber Eats Order
-            </button>
-          </div>
         </div>
       </div>
     </div>

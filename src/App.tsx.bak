@@ -1,6 +1,13 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { MenuItem, Ingredient, Table, Order, Reservation, Customer, WasteRecord } from './types';
 import { StorageService } from './lib/supabase';
+import { 
+  DEFAULT_MENU_ITEMS, 
+  DEFAULT_INGREDIENTS, 
+  DEFAULT_TABLES, 
+  DEFAULT_CUSTOMERS, 
+  DEFAULT_RESERVATIONS 
+} from './data/mockData';
 
 // Component Imports
 import POSView from './components/POSView';
@@ -9,7 +16,6 @@ import MenuView from './components/MenuView';
 import InventoryView from './components/InventoryView';
 import CustomersView from './components/CustomersView';
 import ReportsView from './components/ReportsView';
-import AppInstallPrompt from './components/AppInstallPrompt';
 
 // UI icons
 import { 
@@ -33,7 +39,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
 
-  // Initial Load from Firestore
+  // Initial Load from Firestore (using fallbacks inside StorageService)
   useEffect(() => {
     async function loadAllData() {
       try {
@@ -60,13 +66,51 @@ export default function App() {
           StorageService.getData<WasteRecord>('waste_records')
         ]);
 
-        setMenuItems(initialMenu);
-        setIngredients(initialIngs);
-        setTables(initialTables);
-        setReservations(initialRes);
-        setCustomers(initialCustomers);
+        // 1. Menu Items
+        let loadedMenu = initialMenu;
+        if (loadedMenu.length === 0) {
+          await StorageService.saveData('menu_items', DEFAULT_MENU_ITEMS);
+          loadedMenu = DEFAULT_MENU_ITEMS;
+        }
+        setMenuItems(loadedMenu);
+
+        // 2. Ingredients
+        let loadedIngs = initialIngs;
+        if (loadedIngs.length === 0) {
+          await StorageService.saveData('ingredients', DEFAULT_INGREDIENTS);
+          loadedIngs = DEFAULT_INGREDIENTS;
+        }
+        setIngredients(loadedIngs);
+
+        // 3. Tables
+        let loadedTables = initialTables;
+        if (loadedTables.length === 0) {
+          await StorageService.saveData('tables', DEFAULT_TABLES);
+          loadedTables = DEFAULT_TABLES;
+        }
+        setTables(loadedTables);
+
+        // 4. Reservations
+        let loadedRes = initialRes;
+        if (loadedRes.length === 0) {
+          await StorageService.saveData('reservations', DEFAULT_RESERVATIONS);
+          loadedRes = DEFAULT_RESERVATIONS;
+        }
+        setReservations(loadedRes);
+
+        // 5. Customers
+        let loadedCustomers = initialCustomers;
+        if (loadedCustomers.length === 0) {
+          await StorageService.saveData('customers', DEFAULT_CUSTOMERS);
+          loadedCustomers = DEFAULT_CUSTOMERS;
+        }
+        setCustomers(loadedCustomers);
+
+        // 6. Orders
         setActiveOrders(loadedActive);
         setCompletedOrders(loadedCompleted);
+
+        // 7. Waste
         setWasteRecords(loadedWaste);
 
       } catch (e) {
@@ -89,6 +133,9 @@ export default function App() {
       await StorageService.saveData('active_orders', activeOrders);
       await StorageService.saveData('completed_orders', completedOrders);
       await StorageService.saveData('waste_records', wasteRecords);
+      
+      // Artificial delay for gorgeous UX logging feedback
+      await new Promise(resolve => setTimeout(resolve, 800));
     } catch (e) {
       console.error("Cloud syncing failure:", e);
     } finally {
@@ -385,6 +432,7 @@ export default function App() {
           {activeTab === 'Reports' && (
             <ReportsView
               completedOrders={completedOrders}
+              onSimulateDeliveryOrder={handleAddOrder}
               menuItems={menuItems}
             />
           )}
@@ -392,8 +440,6 @@ export default function App() {
           {activeTab === 'SetupGuide' && <SetupGuideSection />}
         </div>
       </main>
-
-      <AppInstallPrompt />
 
       {/* Footer credits with compliance indicators */}
       <footer className="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800">

@@ -123,10 +123,10 @@ export default function MenuView({
           <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 space-y-3">
             <h4 className="font-bold text-xs text-amber-900 uppercase">Test Settings</h4>
             
-            <div className="space-y-3 font-medium text-xs">
-              <div>
-                <label className="block text-[10px] text-slate-500 uppercase tracking-widest mb-1">Simulate scanning Table QR:</label>
-                <select
+              <div className="space-y-3 font-medium text-xs">
+                <div>
+                  <label className="block text-[10px] text-slate-500 uppercase tracking-widest mb-1">Select Table QR:</label>
+                  <select
                   value={selectedTableNumber}
                   onChange={(e: any) => setSelectedTableNumber(e.target.value)}
                   className="w-full bg-white border border-slate-200 p-2 rounded-lg"
@@ -185,7 +185,7 @@ export default function MenuView({
         </div>
       </div>
 
-      {/* Phone Screen Mockup Frame */}
+      {/* Phone Screen Frame */}
       <div className="lg:col-span-7 flex justify-center">
         <div className="relative border-[10px] border-slate-900 rounded-[35px] w-full max-w-[340px] h-[640px] shadow-2xl bg-slate-50 overflow-hidden flex flex-col justify-between">
           
