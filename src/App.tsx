@@ -421,6 +421,12 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      <div className="bg-slate-950 border-t border-slate-800 px-4 py-3">
+        <p className="text-center text-[10px] text-slate-500 font-medium">
+          Developed by NexaCore Digital LLC
+        </p>
+      </div>
     </div>
   );
 }
